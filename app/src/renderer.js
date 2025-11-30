@@ -88,27 +88,50 @@ function updateButtonStates() {
 
 // 起動ボタン
 startBtn.addEventListener('click', async () => {
+  // すべてのボタンを非活性にする
   startBtn.disabled = true;
+  stopBtn.disabled = true;
+  openBtn.disabled = true;
   showMessage('コンテナを起動しています...', 'info');
   
   try {
     const result = await ipcRenderer.invoke('start-container');
     if (result.success) {
-      showMessage('コンテナを起動しました', 'success');
-      await checkContainerStatus();
+      showMessage('コンテナを起動しました。起動を確認中...', 'info');
+      
+      // コンテナが実際に起動するまで待機（最大30秒）
+      let attempts = 0;
+      const maxAttempts = 30;
+      const checkInterval = setInterval(async () => {
+        attempts++;
+        await checkContainerStatus();
+        
+        if (containerRunning) {
+          clearInterval(checkInterval);
+          showMessage('コンテナを起動しました', 'success');
+          updateButtonStates();
+        } else if (attempts >= maxAttempts) {
+          clearInterval(checkInterval);
+          showMessage('コンテナの起動確認がタイムアウトしました', 'warning');
+          updateButtonStates();
+        }
+      }, 1000);
     } else {
       showMessage('起動に失敗しました: ' + result.error, 'error');
-      startBtn.disabled = false;
+      updateButtonStates();
     }
   } catch (error) {
     showMessage('エラーが発生しました: ' + error.message, 'error');
-    startBtn.disabled = false;
+    updateButtonStates();
   }
 });
 
 // 停止ボタン
 stopBtn.addEventListener('click', async () => {
+  // すべてのボタンを非活性にする
+  startBtn.disabled = true;
   stopBtn.disabled = true;
+  openBtn.disabled = true;
   showMessage('コンテナを停止しています...', 'info');
   
   try {
@@ -116,13 +139,14 @@ stopBtn.addEventListener('click', async () => {
     if (result.success) {
       showMessage('コンテナを停止しました', 'success');
       await checkContainerStatus();
+      updateButtonStates();
     } else {
       showMessage('停止に失敗しました: ' + result.error, 'error');
-      stopBtn.disabled = false;
+      updateButtonStates();
     }
   } catch (error) {
     showMessage('エラーが発生しました: ' + error.message, 'error');
-    stopBtn.disabled = false;
+    updateButtonStates();
   }
 });
 

@@ -15,16 +15,30 @@ module.exports = {
   // Docker Composeコマンド定義
   commands: {
     // コンテナを起動するコマンド
-    start: () => 
-      `docker-compose -f ${path.join(__dirname, 'docker-compose.yml')} up -d`,
+    dockerVersion: () => 
+      `docker --version`,
+
+    // docker composeもチェック
+    dockerComposeVersion: () => 
+      `docker compose --version`,
+
+    // コンテナを起動するコマンド
+    start: () => {
+      const composeFile = path.join(__dirname, 'docker-compose.yml');
+      return `docker compose -f "${composeFile}" up -d`;
+    },
 
     // コンテナを停止するコマンド
-    stop: () => 
-      `docker-compose -f ${path.join(__dirname, 'docker-compose.yml')} down`,
+    stop: () => {
+      const composeFile = path.join(__dirname, 'docker-compose.yml');
+      return `docker compose -f "${composeFile}" down`;
+    },
 
     // コンテナの状態を確認するコマンド
-    status: () => 
-      `docker-compose -f ${path.join(__dirname, 'docker-compose.yml')} ps`
+    status: () => {
+      const composeFile = path.join(__dirname, 'docker-compose.yml');
+      return `docker compose -f "${composeFile}" ps`;
+    }
   },
 
   // n8nのURL

@@ -38,7 +38,11 @@ app.on('activate', () => {
 // Dockerコマンドを実行するヘルパー関数
 async function executeDockerCommand(command, cwd = process.cwd()) {
   try {
-    const { stdout, stderr } = await execAsync(command, { cwd });
+    // コマンドを配列に分割して実行（パスにスペースが含まれる場合の対策）
+    const { stdout, stderr } = await execAsync(command, { 
+      cwd,
+      shell: true // シェル経由で実行することで、クォートを正しく処理
+    });
     return { success: true, output: stdout.trim(), error: stderr };
   } catch (error) {
     return { success: false, output: '', error: error.message };
@@ -48,9 +52,9 @@ async function executeDockerCommand(command, cwd = process.cwd()) {
 // Dockerが利用可能かチェック
 ipcMain.handle('check-docker', async () => {
   try {
-    await execAsync('docker --version');
-    // docker-composeもチェック
-    await execAsync('docker-compose --version');
+    await execAsync(dockerCommands.commands.dockerVersion());
+    // docker composeもチェック
+    await execAsync(dockerCommands.commands.dockerComposeVersion());
     return { available: true };
   } catch (error) {
     return { available: false, error: error.message };
@@ -59,7 +63,7 @@ ipcMain.handle('check-docker', async () => {
 
 // コンテナの状態を確認
 ipcMain.handle('check-status', async () => {
-  // docker-compose psで状態を確認
+  // docker compose psで状態を確認
   const result = await executeDockerCommand(
     dockerCommands.commands.status()
   );
