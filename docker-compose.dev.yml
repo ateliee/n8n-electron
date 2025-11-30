@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: n8n-electron-dev
+    working_dir: /workspace/app
+    volumes:
+      - .:/workspace
+      - /workspace/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DISPLAY=:99
+    stdin_open: true
+    tty: true
+    networks:
+      - electron-dev-network
+
+networks:
+  electron-dev-network:
+    driver: bridge
+

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>n8n Docker Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>n8n Docker Manager</h1>
+    
+    <div class="status-section">
+      <div id="docker-status" class="status-item">
+        <span class="status-label">Docker:</span>
+        <span id="docker-status-text" class="status-text">確認中...</span>
+      </div>
+      <div id="container-status" class="status-item">
+        <span class="status-label">コンテナ:</span>
+        <span id="container-status-text" class="status-text">確認中...</span>
+      </div>
+    </div>
+
+    <div class="button-section">
+      <button id="start-btn" class="btn btn-primary" disabled>
+        起動
+      </button>
+      <button id="stop-btn" class="btn btn-danger" disabled>
+        停止
+      </button>
+      <button id="open-btn" class="btn btn-success" disabled>
+        開く
+      </button>
+    </div>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.dmg
+*.exe
+*.zip
+*.tar.gz
+build/
+out/
+
